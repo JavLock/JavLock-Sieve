@@ -1,4 +1,4 @@
-package com.github.javlock.sieve.operator;
+package com.github.javlock.sieve.operator.network;
 
 import java.net.SocketAddress;
 

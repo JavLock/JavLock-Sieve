@@ -16,6 +16,17 @@ public class PdfFile implements Serializable {
 	@DatabaseField(id = true, canBeNull = false, unique = true)
 	private @Getter @Setter String id;
 	@DatabaseField(dataType = DataType.BYTE_ARRAY)
-	private byte[] data;
+	private @Getter @Setter byte[] data;
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("PdfFile [id=");
+		builder.append(id);
+		builder.append(", data=");
+		builder.append(data.length);
+		builder.append("]");
+		return builder.toString();
+	}
 
 }

@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.javlock.sieve.operator.config.SieveOperatorConfig;
 import com.github.javlock.sieve.operator.gui.OperatorGuiMain;
+import com.github.javlock.sieve.operator.network.ClientHandlerNetty;
 
 import aaa.Event;
 import io.netty.bootstrap.Bootstrap;
@@ -33,11 +35,15 @@ public class SieveOperator extends Thread {
 
 	private @Getter @Setter File dataDir;
 	private @Getter @Setter File configFile;
+
 	private @Getter @Setter SieveOperatorConfig config = new SieveOperatorConfig();
-
-	OperatorGuiMain operatorGuiMain = new OperatorGuiMain();
-
+	private OperatorGuiMain operatorGuiMain = new OperatorGuiMain();
 	private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+	private EventLoopGroup group = new NioEventLoopGroup();
+	private Bootstrap clientBootstrap = new Bootstrap();
+	private @Getter ChannelFuture channelFuture;
+
+	public int currentLevel;
 
 	public void init() throws ConfigurationException, IOException {
 		initConfig();
@@ -46,7 +52,7 @@ public class SieveOperator extends Thread {
 	}
 
 	private void initGui() {
-
+		operatorGuiMain.setOperator(this);
 	}
 
 	private void initConfig() throws IOException, ConfigurationException {
@@ -60,10 +66,6 @@ public class SieveOperator extends Thread {
 		}
 	}
 
-	EventLoopGroup group = new NioEventLoopGroup();
-	Bootstrap clientBootstrap = new Bootstrap();
-	ChannelFuture channelFuture;
-
 	private void initNetwork() {
 		LOGGER.info("initNetwork-start");
 		clientBootstrap.group(group);
@@ -73,8 +75,8 @@ public class SieveOperator extends Thread {
 			@Override
 			protected void initChannel(SocketChannel ch) throws Exception {
 				ch.pipeline().addLast(new ObjectEncoder());
-				ch.pipeline().addLast(
-						new ObjectDecoder(ClassResolvers.softCachingConcurrentResolver(Event.class.getClassLoader())));
+				ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE,
+						ClassResolvers.softCachingConcurrentResolver(Event.class.getClassLoader())));
 				ch.pipeline().addLast(new ClientHandlerNetty());
 			}
 		});
@@ -99,19 +101,5 @@ public class SieveOperator extends Thread {
 		channelFuture = clientBootstrap.connect().sync();
 		LOGGER.info("startNetwork-end");
 
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				do {
-					channelFuture.channel().writeAndFlush("aaaa");
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				} while (true);
-			}
-		}).start();
 	}
 }

@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.javlock.sieve.hub.config.SieveHubConfig;
 import com.github.javlock.sieve.hub.db.SieveDataBase;
+import com.github.javlock.sieve.hub.network.ClientHandlerNetty;
+import com.github.javlock.sieve.hub.worker.PdfWorker;
 
 import aaa.Event;
 import aaa.Test;
@@ -35,7 +37,7 @@ public class SieveHub extends Thread {
 	private @Getter ServerBootstrap serverBootstrap = new ServerBootstrap();
 	private @Getter EventLoopGroup serverWorkgroup = new NioEventLoopGroup();
 	private @Getter ChannelFuture channelFuture;
-
+	private SieveHub thisHub = this;
 	private @Getter SieveDataBase db = new SieveDataBase(this);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SieveHub.class.getSimpleName());
@@ -45,6 +47,8 @@ public class SieveHub extends Thread {
 	private @Getter @Setter SieveHubConfig config = new SieveHubConfig();
 
 	private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+
+	public PdfWorker pdfWorker = new PdfWorker(this);
 
 	public void init() throws IOException, ConfigurationException, SQLException {
 		initConfig();
@@ -76,10 +80,10 @@ public class SieveHub extends Thread {
 		serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			protected void initChannel(SocketChannel ch) throws Exception {
-				ch.pipeline().addLast(
-						new ObjectDecoder(ClassResolvers.softCachingConcurrentResolver(Event.class.getClassLoader())));
+				ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE,
+						ClassResolvers.softCachingConcurrentResolver(Event.class.getClassLoader())));
 				ch.pipeline().addLast(new ObjectEncoder());
-				ch.pipeline().addLast(new ClientHandlerNetty());
+				ch.pipeline().addLast(new ClientHandlerNetty(thisHub));
 				ch.writeAndFlush(new Test("111", 123));
 			}
 		});
@@ -88,7 +92,9 @@ public class SieveHub extends Thread {
 
 	@Override
 	public void run() {
+		pdfWorker.start();
 		startNetwork();
+
 	}
 
 	private void startNetwork() {

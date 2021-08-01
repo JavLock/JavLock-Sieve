@@ -1,4 +1,4 @@
-package com.github.javlock.sieve.operator;
+package com.github.javlock.sieve.operator.config;
 
 import lombok.Getter;
 import lombok.Setter;
