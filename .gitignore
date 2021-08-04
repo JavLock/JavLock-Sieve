@@ -2,3 +2,6 @@
 .settings
 .classpath
 target
+
+Sieve-Hub/SieveHubData/
+Sieve-Operator/SieveOperatorData/
