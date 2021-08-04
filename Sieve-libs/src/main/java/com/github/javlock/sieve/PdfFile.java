@@ -1,4 +1,4 @@
-package aaa;
+package com.github.javlock.sieve;
 
 import java.io.Serializable;
 
@@ -13,10 +13,9 @@ import lombok.Setter;
 public class PdfFile implements Serializable {
 	private static final long serialVersionUID = 2983984940303647075L;
 
-	@DatabaseField(id = true, canBeNull = false, unique = true)
-	private @Getter @Setter String id;
-	@DatabaseField(dataType = DataType.BYTE_ARRAY)
-	private @Getter @Setter byte[] data;
+	private @DatabaseField(id = true, canBeNull = false, unique = true) @Getter @Setter String id;
+	private @DatabaseField(dataType = DataType.BYTE_ARRAY) @Getter @Setter byte[] data;
+	private @DatabaseField @Getter @Setter boolean parsed;
 
 	@Override
 	public String toString() {

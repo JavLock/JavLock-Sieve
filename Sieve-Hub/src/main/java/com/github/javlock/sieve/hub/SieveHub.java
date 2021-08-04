@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.javlock.sieve.Event;
+import com.github.javlock.sieve.Test;
 import com.github.javlock.sieve.hub.config.SieveHubConfig;
 import com.github.javlock.sieve.hub.db.SieveDataBase;
 import com.github.javlock.sieve.hub.network.ClientHandlerNetty;
 import com.github.javlock.sieve.hub.worker.PdfWorker;
 
-import aaa.Event;
-import aaa.Test;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -44,6 +44,9 @@ public class SieveHub extends Thread {
 
 	private @Getter @Setter File dataDir;
 	private @Getter @Setter File configFile;
+
+	private @Getter @Setter File errorDataDir;
+
 	private @Getter @Setter SieveHubConfig config = new SieveHubConfig();
 
 	private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());

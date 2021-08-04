@@ -11,7 +11,9 @@ public class SieveHubInit {
 			SieveHub sieveHub = new SieveHub();
 
 			sieveHub.setDataDir(new File("SieveHubData"));
+
 			sieveHub.setConfigFile(new File(sieveHub.getDataDir(), "SieveHubConfig.yml"));
+			sieveHub.setErrorDataDir(new File(sieveHub.getDataDir(), "errorDataDir"));
 
 			sieveHub.init();
 			sieveHub.start();

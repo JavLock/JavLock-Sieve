@@ -1,4 +1,4 @@
-package aaa;
+package com.github.javlock.sieve;
 
 import java.util.ArrayList;
 import java.util.Objects;

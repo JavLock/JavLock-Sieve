@@ -19,10 +19,10 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.github.javlock.sieve.PdfFile;
 import com.github.javlock.sieve.operator.SieveOperator;
 import com.google.common.hash.Hashing;
 
-import aaa.PdfFile;
 import lombok.Getter;
 import lombok.Setter;
 

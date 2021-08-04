@@ -5,9 +5,9 @@ import java.net.SocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.javlock.sieve.PdfFile;
 import com.github.javlock.sieve.hub.SieveHub;
 
-import aaa.PdfFile;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -37,12 +37,11 @@ public class ClientHandlerNetty extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (msg instanceof PdfFile) {
 			PdfFile pdfFile = (PdfFile) msg;
-			hub.pdfWorker.append(pdfFile);
+			hub.getDb().save(pdfFile);
 			return;
 		}
 
 		LOGGER.info("msg readed:{}", msg);
-
 	}
 
 	@Override

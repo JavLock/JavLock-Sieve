@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.javlock.sieve.Event;
 import com.github.javlock.sieve.operator.config.SieveOperatorConfig;
 import com.github.javlock.sieve.operator.gui.OperatorGuiMain;
 import com.github.javlock.sieve.operator.network.ClientHandlerNetty;
 
-import aaa.Event;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
